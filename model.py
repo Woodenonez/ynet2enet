@@ -150,6 +150,7 @@ class YNetTorch(nn.Module):
 
 		self.encoder = YNetEncoder(in_channels=semantic_classes + obs_len, channels=encoder_channels)
 
+		pred_len = 1 # XXX
 		self.goal_decoder = YNetDecoder(encoder_channels, decoder_channels, output_len=pred_len)
 		self.traj_decoder = YNetDecoder(encoder_channels, decoder_channels, output_len=pred_len, traj=waypoints)
 
@@ -314,9 +315,10 @@ class YNet:
 			self.val_FDE.append(val_FDE)
 
 			if val_ADE < best_test_ADE:
-				print(f'Best Epoch {ep}: \nVal ADE: {val_ADE} \nVal FDE: {val_FDE}')
+				print(f'Best Epoch {ep}: Val ADE: {val_ADE}; Val FDE: {val_FDE}')
 				torch.save(model.state_dict(), 'Model/' + experiment_name + '_weights.pt')
 				best_test_ADE = val_ADE
+			print('-'*10)
 
 	def evaluate(self, data, params, image_path, batch_size=8, num_goals=20, num_traj=1, rounds=1, device=None, dataset_name=None):
 		"""

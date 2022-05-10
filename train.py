@@ -75,7 +75,8 @@ def train(model, train_loader, train_images, epoch, obs_len, pred_len, batch_siz
 			# Predict trajectory distribution conditioned on goal and waypoints
 			traj_input = [torch.cat([feature, goal], dim=1) for feature, goal in zip(features, gt_waypoints_maps_downsampled)]
 			pred_traj_map = model.pred_traj(traj_input)
-			traj_loss = criterion(pred_traj_map, gt_future) # * params['loss_scale']  # BCEWithLogitsLoss
+			# traj_loss = criterion(pred_traj_map, gt_future_map) * params['loss_scale']  # BCEWithLogitsLoss
+			traj_loss = criterion(pred_traj_map, gt_future) # * params['loss_scale']  # EBM loss
 
 			# Backprop
 			loss = goal_loss + traj_loss

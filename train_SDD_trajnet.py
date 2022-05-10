@@ -5,7 +5,10 @@ import pandas as pd
 from model import YNet
 import datetime
 
-import pickle5 as pickle
+try:
+    import pickle5 as pickle
+except:
+    pass
 
 import warnings
 from torch.serialization import SourceChangeWarning
@@ -35,13 +38,15 @@ with open(CONFIG_FILE_PATH) as file:
 experiment_name = CONFIG_FILE_PATH.split('.yaml')[0].split('config/')[1]
 
 # #### Load preprocessed Data
-with open(TRAIN_DATA_PATH, "rb") as fh:
-    df_train = pickle.load(fh)
-with open(VAL_DATA_PATH, "rb") as fh:
-    df_val = pickle.load(fh)
-# df_train = pd.read_pickle(TRAIN_DATA_PATH) # in the form of dataframe
-# df_val = pd.read_pickle(VAL_DATA_PATH)     # in the form of dataframe
-# df_train.head() # return the first n (default n=5) rows
+try:
+    with open(TRAIN_DATA_PATH, "rb") as fh:
+        df_train = pickle.load(fh)
+    with open(VAL_DATA_PATH, "rb") as fh:
+        df_val = pickle.load(fh)
+except:
+    df_train = pd.read_pickle(TRAIN_DATA_PATH) # in the form of dataframe
+    df_val = pd.read_pickle(VAL_DATA_PATH)     # in the form of dataframe
+    df_train.head() # return the first n (default n=5) rows
 
 # #### Initiate model and load pretrained weights
 model = YNet(obs_len=OBS_LEN, pred_len=PRED_LEN, params=params)
