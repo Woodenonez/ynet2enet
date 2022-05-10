@@ -1,2 +1,4 @@
 Model/
 segmentation_models/
+
+__pycache__/
