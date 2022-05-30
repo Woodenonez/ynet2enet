@@ -59,7 +59,6 @@ def evaluate(model, val_loader, val_images, num_goals, num_traj, obs_len, batch_
 	model.eval()
 	val_ADE = []
 	val_FDE = []
-	counter = 0
 	with torch.no_grad():
 		cnt = 0
 		# outer loop, for loop over each scene as scenes have different image size and to calculate segmentation only once
@@ -91,7 +90,7 @@ def evaluate(model, val_loader, val_images, num_goals, num_traj, obs_len, batch_
 
 				# Predict goal and waypoint probability distributions
 				pred_waypoint_map = model.pred_goal(features)
-				pred_waypoint_map = pred_waypoint_map[:, waypoints]
+				# pred_waypoint_map = pred_waypoint_map[:, waypoints]
 
 				pred_waypoint_map_sigmoid = pred_waypoint_map / temperature
 				pred_waypoint_map_sigmoid = model.sigmoid(pred_waypoint_map_sigmoid)

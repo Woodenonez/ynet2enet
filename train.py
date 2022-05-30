@@ -88,10 +88,10 @@ def train(model, train_loader, train_images, epoch, obs_len, pred_len, batch_siz
 				train_loss += loss
 				# Evaluate using Softargmax, not a very exact evaluation but a lot faster than full prediction
 				pred_traj = model.softargmax(pred_traj_map)
-				pred_goal = model.softargmax(pred_goal_map[:, -1:])
+				pred_goal = model.softargmax(pred_goal_map)
 
 				train_ADE.append(((((gt_future - pred_traj) / params['resize']) ** 2).sum(dim=2) ** 0.5).mean(dim=1))
-				train_FDE.append(((((gt_future[:, -1:] - pred_goal[:, -1:]) / params['resize']) ** 2).sum(dim=2) ** 0.5).mean(dim=1))
+				train_FDE.append(((((gt_future[:, -1:] - pred_goal) / params['resize']) ** 2).sum(dim=2) ** 0.5).mean(dim=1))
 
 	train_ADE = torch.cat(train_ADE).mean()
 	train_FDE = torch.cat(train_FDE).mean()
