@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from utils.image_utils import get_patch, image2world
+from utils.image_utils import get_patch
 
 
 def train(model, train_loader, train_images, epoch, obs_len, pred_len, batch_size, params, gt_template, device, input_template, optimizer, criterion, dataset_name):
@@ -47,11 +47,11 @@ def train(model, train_loader, train_images, epoch, obs_len, pred_len, batch_siz
 			observed_map = get_patch(input_template, observed, H, W)
 			observed_map = torch.stack(observed_map).reshape([-1, obs_len, H, W])
 
-			gt_future = trajectory[i:i + batch_size, obs_len:].to(device)
+			gt_future = trajectory[i:i+batch_size, obs_len:].to(device) # batch_size x pred_len x dimension
 			gt_future_map = get_patch(gt_template, gt_future.reshape(-1, 2).cpu().numpy(), H, W)
 			gt_future_map = torch.stack(gt_future_map).reshape([-1, pred_len, H, W])
 
-			gt_waypoints = gt_future[:, params['waypoints']]
+			gt_waypoints = gt_future[:, params['waypoints']] # which point in gt_future is the "waypoint"
 			gt_waypoint_map = get_patch(input_template, gt_waypoints.reshape(-1, 2).cpu().numpy(), H, W)
 			gt_waypoint_map = torch.stack(gt_waypoint_map).reshape([-1, gt_waypoints.shape[1], H, W])
 
@@ -66,7 +66,7 @@ def train(model, train_loader, train_images, epoch, obs_len, pred_len, batch_siz
 			# Predict goal and waypoint probability distribution
 			pred_goal_map = model.pred_goal(features)
 			# goal_loss = criterion(pred_goal_map, gt_future_map) * params['loss_scale']  # BCEWithLogitsLoss
-			goal_loss = criterion(pred_goal_map, gt_future) #* params['loss_scale']  # EBM loss
+			goal_loss = criterion(pred_goal_map, gt_waypoints) #* params['loss_scale']  # EBM loss
 
 			# Prepare (downsample) ground-truth goal and trajectory heatmap representation for conditioning trajectory decoder
 			gt_waypoints_maps_downsampled = [nn.AvgPool2d(kernel_size=2**i, stride=2**i)(gt_waypoint_map) for i in range(1, len(features))]

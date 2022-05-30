@@ -30,7 +30,7 @@ PRED_LEN = 12  # in timesteps
 NUM_GOALS = 20  # K_e
 NUM_TRAJ = 1  # K_a
 
-BATCH_SIZE = 2
+BATCH_SIZE = 4
 
 # #### Load config file and print hyperparameters
 with open(CONFIG_FILE_PATH) as file:

@@ -150,8 +150,7 @@ class YNetTorch(nn.Module):
 
 		self.encoder = YNetEncoder(in_channels=semantic_classes + obs_len, channels=encoder_channels)
 
-		pred_len = 1 # XXX
-		self.goal_decoder = YNetDecoder(encoder_channels, decoder_channels, output_len=pred_len)
+		self.goal_decoder = YNetDecoder(encoder_channels, decoder_channels, output_len=1)
 		self.traj_decoder = YNetDecoder(encoder_channels, decoder_channels, output_len=pred_len, traj=waypoints)
 
 		self.softargmax_ = SoftArgmax2D(normalized_coordinates=False)
@@ -242,7 +241,6 @@ class YNet:
 		total_len = self.pred_len + self.obs_len
 
 		print('Preprocess data')
-		dataset_name = dataset_name.lower()
 		img_fname = 'reference.jpg' # reference image file name for SDD
 		seg_mask = False # for SDD
 
@@ -280,10 +278,8 @@ class YNet:
 
 		# Create template
 		size = int(4200 * params['resize'])
-
 		input_template = create_dist_mat(size=size)
 		input_template = torch.Tensor(input_template).to(device)
-
 		gt_template = create_gaussian_heatmap_template(size=size, kernlen=params['kernlen'], nsig=params['nsig'], normalize=False)
 		gt_template = torch.Tensor(gt_template).to(device)
 
@@ -315,10 +311,9 @@ class YNet:
 			self.val_FDE.append(val_FDE)
 
 			if val_ADE < best_test_ADE:
-				print(f'Best Epoch {ep}: Val ADE: {val_ADE}; Val FDE: {val_FDE}')
+				print(f'Best Epoch {ep}: \nVal ADE: {val_ADE} \nVal FDE: {val_FDE}')
 				torch.save(model.state_dict(), 'Model/' + experiment_name + '_weights.pt')
 				best_test_ADE = val_ADE
-			print('-'*10)
 
 	def evaluate(self, data, params, image_path, batch_size=8, num_goals=20, num_traj=1, rounds=1, device=None, dataset_name=None):
 		"""
@@ -472,30 +467,6 @@ class YNet:
 
 	def save(self, path):
 		torch.save(self.model.state_dict(), path)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
