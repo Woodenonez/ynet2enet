@@ -65,7 +65,7 @@ def evaluate(model, val_loader, val_images, num_goals, num_traj, obs_len, batch_
 		for trajectory, meta, scene in val_loader:
 			cnt += 1
 			# Break to boost the validation
-			if cnt > 2:
+			if cnt > 5:
 				break
 			
 			# Get scene image and apply semantic segmentation

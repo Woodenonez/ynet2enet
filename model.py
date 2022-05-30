@@ -306,12 +306,12 @@ class YNet:
 										waypoints=params['waypoints'], resize=params['resize'],
 										temperature=params['temperature'], use_TTST=False,
 										use_CWS=False, dataset_name=dataset_name, mode='val')
-			print(f'[VAL] Epoch {ep}: \nVal ADE: {val_ADE} \nVal FDE: {val_FDE}')
+			print(f'[VAL] Epoch {ep}: Val ADE: {val_ADE} Val FDE: {val_FDE}')
 			self.val_ADE.append(val_ADE)
 			self.val_FDE.append(val_FDE)
 
 			if val_ADE < best_test_ADE:
-				print(f'Best Epoch {ep}: \nVal ADE: {val_ADE} \nVal FDE: {val_FDE}')
+				print(f'[Best] Epoch {ep}: Val ADE: {val_ADE} Val FDE: {val_FDE}')
 				torch.save(model.state_dict(), 'Model/' + experiment_name + '_weights.pt')
 				best_test_ADE = val_ADE
 
